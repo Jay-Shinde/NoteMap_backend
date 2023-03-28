@@ -1,0 +1,23 @@
+{
+  "name": "notemap-backend",
+  "version": "1.0.0",
+  "description": "NoteMap - online notebook for mapping your notes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.15.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.0.3",
+    "node": "^18.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
