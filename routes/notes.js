@@ -4,43 +4,6 @@ const Notes = require("../models/Notes");
 const fetchuser = require("../middleware/fetchuser");
 const { body, validationResult } = require("express-validator");
 
-//------route 1-------get all the notes from the user using : get  "/api/auth/fetchmotes" login required-----------------//
-
-router.get("/fetchnotes", fetchuser, async (req, res) => {
-  try {
-    const notes = await Notes.find({ user: req.user });
-    res.send(notes);
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send("Internal server error !");
-  }
-});
-
-//------route 2-------add notes from the user using : get  "/api/notes/addnote" login required-----------------//
-
-router.post(
-  "/addnote",
-  [
-    body("title", "Enter atleast 3 characters").isLength({ min: 3 }),
-    body("description", "Enter atleast 5 characters").isLength({ min: 5 }),
-  ],
-  fetchuser,
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(400).json({ errors: errors.array() });
-    try {
-      const { title, description, tag } = req.body;
-      const note = new Notes({ user: req.user, title, description, tag });
-      const savednote = await note.save();
-      res.json(savednote);
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send("some error occured !");
-    }
-  }
-);
-
 //------route 3-------update the notes using : Put "/api/auth/updatenote" login required-----------------//
 
 router.put("/updatenote/:id", fetchuser, async (req, res) => {
@@ -76,6 +39,45 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
     res.status(500).send("Internal server error !");
   }
 });
+
+//------route 1-------get all the notes from the user using : get  "/api/auth/fetchmotes" login required-----------------//
+
+router.get("/fetchnotes", fetchuser, async (req, res) => {
+  try {
+    const notes = await Notes.find({ user: req.user });
+    res.send(notes);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal server error !");
+  }
+});
+
+//------route 2-------add notes from the user using : get  "/api/notes/addnote" login required-----------------//
+
+router.post(
+  "/addnote",
+  [
+    body("title", "Enter atleast 3 characters").isLength({ min: 3 }),
+    body("description", "Enter atleast 5 characters").isLength({ min: 5 }),
+  ],
+  fetchuser,
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+     try {
+      const { title, description, tag } = req.body;
+      const note = new Notes({ user: req.user, title, description, tag });
+      const savednote = await note.save();
+      res.json(savednote);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send("some error occured !");
+    }
+  }
+);
+
+
 
 //------route 4-------delete the notes using : delete "/api/auth/deletenote" login required-----------------//
 

@@ -28,9 +28,10 @@ router.post(
     //following code is for validation
 
     //if there are errors then this code returns error msg with a bad request
+    let success=false;
     const errors = validationResult(req);
     if (!errors.isEmpty())
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({success, errors: errors.array() });
 
     //code for checking unique email id using async method and if not unique then send msg
     try {
@@ -38,7 +39,7 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ error: "sorry , user  with this email already exists" });
+          .json({ success, error: "sorry , user  with this email already exists" });
       }
 
       //following code used for
@@ -58,7 +59,8 @@ router.post(
       };
       var authtoken = jwt.sign(data, JWT_secKey);
       //console.log(authtoken);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
       console.log(error.message);
       res.status(500).send("some error occured !");
@@ -95,6 +97,7 @@ router.post(
     body("password", "Password can not be blank !").exists(),
   ],
   async (req, res) => {
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -105,22 +108,23 @@ router.post(
       let user = await User.findOne({ email });
 
       if (!user) {
-        return res.status(400).json({ error: "Enter valid credentials !" });
+        return res.status(400).json({success, error: "Enter valid credentials !" });
       }
 
       const passcompre = await bcrypt.compare(password, user.password);
       if (!passcompre) {
-        return res.status(400).json({ error: "Enter valid credentials !" });
+        return res.status(400).json({success, error: "Enter valid credentials !" });
       }
 
       const data = {
         userID: user.id,
       };
       var authtoken = jwt.sign(data, JWT_secKey);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
       console.log(error.message);
-      res.status(500).send("Internal server error !");
+      res.status(500).json({success, error: "Internal server error !" });
     }
   }
 );

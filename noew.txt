@@ -1,6 +1,0 @@
-localhost:5000/api/auth/createuser
-{
-    "name": "jayeshsd",
-    "email": "11j@gmail.com",
-    "password": "12345"
-}
